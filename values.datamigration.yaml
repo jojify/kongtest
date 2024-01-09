@@ -1,0 +1,502 @@
+deployment:
+  kong:
+    # Enable or disable Kong itself
+    # Setting this to false with ingressController.enabled=true will create a
+    # controller-only release.
+    enabled: true
+  ## Specify the service account to create and to be assigned to the deployment / daemonset and for th migrations
+  serviceAccount:
+    create: true
+  ## Optionally specify the name of the service account to create and the annotations to add.
+  #  name:
+  #  annotations: {}
+
+  ## Optionally specify any extra sidecar containers to be included in the deployment
+  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+  test:
+    # Enable creation of test resources for use with "helm test"
+    enabled: false
+  # Use a DaemonSet controller instead of a Deployment controller
+  daemonset: false
+  hostNetwork: false
+
+
+# -----------------------------------------------------------------------------
+# Kong parameters
+# -----------------------------------------------------------------------------
+
+# Specify Kong configuration
+# This chart takes all entries defined under `.env` and transforms them into into `KONG_*`
+# environment variables for Kong containers.
+# Their names here should match the names used in https://github.com/Kong/kong/blob/master/kong.conf.default
+# See https://docs.konghq.com/latest/configuration also for additional details
+# Values here take precedence over values from other sections of values.yaml,
+# e.g. setting pg_user here will override the value normally set when postgresql.enabled
+# is set below. In general, you should not set values here if they are set elsewhere.
+env:
+  # database: "postgres"
+  database: "off"
+  # admin_api_uri: "https://localhost:8444"
+  # admin_gui_api_url: "https://localhost:8444"
+  # admin_gui_url: "https://localhost:8445"
+  admin_api_uri: "https://kongadmin.dev2.pickles.com.au"
+  admin_gui_api_url: "https://kongadmin.dev2.pickles.com.au"
+  admin_gui_url: "https://kongmanager.dev2.pickles.com.au"
+  portal_api_url: "https://kongportalapi.dev2.pickles.com.au"
+  portal_url: "https://kongportal.dev2.pickles.com.au"    
+  nginx_worker_processes: "2"
+  proxy_access_log: /dev/stdout
+  admin_access_log: /dev/stdout
+  admin_gui_access_log: /dev/stdout
+  portal_api_access_log: /dev/stdout
+  proxy_error_log: /dev/stderr
+  admin_error_log: /dev/stderr
+  admin_gui_error_log: /dev/stderr
+  portal_api_error_log: /dev/stderr
+  prefix: /kong_prefix/
+  d365fostorage1:
+    valueFrom:
+      secretKeyRef:
+        name: pickles-picklesauctions-kong-sas-token
+        key: d365fostorage1 
+
+# storageClass: "default"
+# postgresql:
+#   enabled: true
+#   auth:
+#     username: "kong"  
+#     existingSecret: kongdb-postgresql
+#     secretKeys:
+#       adminPasswordKey: postgres-password
+#       userPasswordKey: password
+#       password: password        
+
+# This section can be used to configure some extra labels that will be added to each Kubernetes object generated.
+extraLabels: {}
+
+# Specify Kong's Docker image and repository details here
+image:
+  repository: dtapickles.azurecr.io/devops/kong/kong-proxy-go-plugins
+  tag: "3.4.1.1.279639"
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## If using the official Kong Enterprise registry above, you MUST provide a secret.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  pullSecrets:
+    - dtapickles
+
+# Specify Kong status listener configuration
+# This listen is internal-only. It cannot be exposed through a service or ingress.
+status:
+  enabled: true
+  http:
+    # Enable plaintext HTTP listen for the status listen
+    enabled: true
+    containerPort: 8100
+    parameters: []
+
+  tls:
+    # Enable HTTPS listen for the status listen
+    # Kong versions prior to 2.1 do not support TLS status listens.
+    # This setting must remain false on those versions
+    enabled: false
+    containerPort: 8543
+    parameters: []
+
+# Specify Kong cluster service and listener configuration
+#
+# The cluster service *must* use TLS. It does not support the "http" block
+# available on other services.
+#
+# The cluster service cannot be exposed through an Ingress, as it must perform
+# TLS client validation directly and is not compatible with TLS-terminating
+# proxies. If you need to expose it externally, you must use "type:
+# LoadBalancer" and use a TCP-only load balancer (check your Kubernetes
+# provider's documentation, as the configuration required for this varies).
+cluster:
+  enabled: false
+  # To specify annotations or labels for the cluster service, add them to the respective
+  # "annotations" or "labels" dictionaries below.
+  annotations: {}
+  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+  labels: {}
+
+  tls:
+    enabled: false
+    servicePort: 8005
+    containerPort: 8005
+    parameters: []
+
+  type: ClusterIP
+
+# Specify Kong proxy service configuration
+proxy:
+  enabled: true
+  type: LoadBalancer
+  loadBalancerIP: 10.108.1.250
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  labels:
+    enable-metrics: "true"
+
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    parameters:
+    - http2
+
+  # Kong proxy ingress settings.
+  # Note: You need this only if you are using another Ingress Controller
+  # to expose Kong outside the k8s cluster.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    ingressClassName:
+    hostname:
+    annotations: {}
+    path: /
+
+
+# -----------------------------------------------------------------------------
+# Ingress Controller parameters
+# -----------------------------------------------------------------------------
+ingressController:
+  enabled: true
+  image:
+    repository: kong/kubernetes-ingress-controller
+    tag: "2.12"
+    effectiveSemver:
+  args: []
+
+  # Specify individual namespaces to watch for ingress configuration. By default,
+  # when no namespaces are set, the controller watches all namespaces and uses a
+  # ClusterRole to grant access to Kubernetes resources. When you list specific
+  # namespaces, the controller will watch those namespaces only and will create
+  # namespaced-scoped Roles for each of them. Note that watching specific namespaces
+  # disables KongClusterPlugin usage, as KongClusterPlugins only exist as cluster resources.
+  # Requires controller 2.0.0 or newer.
+  watchNamespaces: []
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env:
+    # The controller disables TLS verification by default because Kong
+    # generates self-signed certificates by default. Set this to false once you
+    # have installed CA-signed certificates.
+    kong_admin_tls_skip_verify: true
+    # If using Kong Enterprise with RBAC enabled, uncomment the section below
+    # and specify the secret/key containing your admin token.
+    # kong_admin_token:
+    #   valueFrom:
+    #     secretKeyRef:
+    #        name: CHANGEME-admin-token-secret
+    #        key: CHANGEME-admin-token-key
+
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+    certificate:
+      provided: false
+    # Specifiy the secretName when the certificate is provided via a TLS secret
+    # secretName: ""
+    # Specifiy the CA bundle of the provided certificate.
+    # This is a PEM encoded CA bundle which will be used to validate the webhook certificate. If unspecified, system trust roots on the apiserver are used.
+    # caBundle:
+    #   | Add the CA bundle content here.
+
+  ingressClass: kong-datamigration
+  # annotations for IngressClass resource (Kubernetes 1.18+)
+  ingressClassAnnotations: {}
+
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
+  # general properties
+  livenessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    timeoutSeconds: 20
+    periodSeconds: 20
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: "/readyz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    timeoutSeconds: 20
+    periodSeconds: 20
+    successThreshold: 1
+    failureThreshold: 3
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 600Mi
+
+
+# If you want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+resources:
+  limits:
+   cpu: 1
+   memory: 1.5Gi
+  requests:
+   cpu: 200m
+   memory: 600Mi
+
+# readinessProbe for Kong pods
+readinessProbe:
+  httpGet:
+    path: "/status/ready"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+# livenessProbe for Kong pods
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+
+# Enable autoscaling using HorizontalPodAutoscaler
+# When configuring an HPA, you must set resource requests on all containers via
+# "resources" and, if using the controller, "ingressController.resources" in values.yaml
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2beta
+  targetCPUUtilizationPercentage:
+  ## Otherwise for clusters that do support autoscaling/v2beta, use metrics
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 120
+
+priorityClassName: ""
+
+# securityContext for Kong pods.
+securityContext: {}
+
+# securityContext for containers.
+containerSecurityContext: {}
+
+serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  # If you wish to gather metrics from a Kong instance with the proxy disabled (such as a hybrid control plane), see:
+  # https://github.com/Kong/charts/blob/main/charts/kong/README.md#prometheus-operator-integration
+  enabled: true
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
+  namespace: kong-datamigration
+  labels:
+    release: kube-prometheus-stack
+
+# Toggle Kong Enterprise features on or off
+# RBAC and SMTP configuration have additional options that must all be set together
+# Other settings should be added to the "env" settings below
+enterprise:
+  enabled: true
+  # Kong Enterprise license secret name
+  # This secret must contain a single 'license' key, containing your base64-encoded license data
+  # The license secret is required to unlock all Enterprise features. If you omit it,
+  # Kong will run in free mode, with some Enterprise features disabled.
+  license_secret: kong-enterprise-license
+  vitals:
+    enabled: true
+  portal:
+    enabled: false
+  rbac:
+    enabled: false
+    admin_gui_auth: basic-auth
+    # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions
+    session_conf_secret: kong-session-config
+    # If admin_gui_auth is not set to basic-auth, provide a secret name which
+    # has an admin_gui_auth_conf key containing the plugin config JSON
+    admin_gui_auth_conf_secret: CHANGEME-admin-gui-auth-conf-secret
+
+# Specify Kong admin API service and listener configuration
+admin:
+  # Enterprise users that wish to use Kong Manager with the controller should enable this
+  enabled: true
+  type: ClusterIP
+  annotations:
+    konghq.com/protocol: "https"  
+  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+  labels: {}
+
+  http:
+    enabled: false
+    servicePort: 8001
+    containerPort: 8001
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 8444
+    containerPort: 8444
+    parameters:
+    - http2
+
+  ingress:
+    enabled: true
+    ingressClassName: kong-datamigration
+    hostname: kongadmin.dev2.pickles.com.au
+    path: /
+
+manager:
+  # Enable creating a Kubernetes service for Kong Manager
+  enabled: true
+  annotations:
+    konghq.com/protocol: "https"    
+  type: ClusterIP
+  labels: {}
+
+  http:
+    enabled: false
+    servicePort: 8002
+    containerPort: 8002
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 8445
+    containerPort: 8445
+    parameters:
+    - http2
+
+  ingress:
+    enabled: true
+    ingressClassName: kong-datamigration
+    hostname: kongmanager.dev2.pickles.com.au
+    path: /
+
+portal:
+  # Enable creating a Kubernetes service for the Developer Portal
+  enabled: true
+  type: ClusterIP
+  labels: {}
+
+  http:
+    enabled: false
+    servicePort: 8003
+    containerPort: 8003
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 8446
+    containerPort: 8446
+    parameters:
+    - http2
+
+  ingress:
+    enabled: true
+    ingressClassName: kong-datamigration
+    hostname: kongportal.dev2.pickles.com.au
+    path: /
+
+portalapi:
+  # Enable creating a Kubernetes service for the Developer Portal API
+  enabled: true
+  type: ClusterIP
+  labels: {}
+
+  http:
+    enabled: true
+    servicePort: 8004
+    containerPort: 8004
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 8447
+    containerPort: 8447
+    parameters:
+    - http2
+
+  ingress:
+    enabled: true
+    ingressClassName: kong-datamigration
+    hostname: kongportal.dev2.pickles.com.au
+    path: /
+
+clustertelemetry:
+  enabled: false
+  # To specify annotations or labels for the cluster telemetry service, add them to the respective
+  # "annotations" or "labels" dictionaries below.
+  annotations: {}
+  labels: {}
+
+  tls:
+    enabled: false
+    servicePort: 8006
+    containerPort: 8006
+    parameters: []
+
+  type: ClusterIP
+
+extraConfigMaps: []
+
+extraSecrets: []
+
+kongAuthJwt:
+  algorithm: RS256
+  key: https://apmf-dm.dev2.pickles.com.au
+  kongCredType: jwt
+  rsaPublicKey: |-
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwW60gb/cRNZ3FVvcsSW0
+    wG8ACSkT0lFQRjTLZDPvaMle2/pYtp5QCAsANiLoairttAYStcEGz9IzF8wCekR3
+    b5KtDToCUu9lMJytzffeXMPRLbkvnQJpEAiyNNT13ayUjOUgBAdftUGOYnto4qKc
+    glvuVXI5PFvAiDBT3xrQMsHeZ1gSJdUhGLr1ji9fJmMQH+XF+1W/d56t6dngrQuy
+    TpH4ylB6wS9ueqQYOQgGycmrGP8AXKF8AtRnXPYH2Wy/NIaHUkNkL2U2G2uc77al
+    0NDbEpxvqdSBYXytt/mRKFXiPFvZauwoQmtAvvXaCldsPsahkc7q3q6tsGjGJAhB
+    rQIDAQAB
+    -----END PUBLIC KEY-----
+
+kongConsumer:
+  namespace: kong-datamigration
+
+kongSasToken:
+  keyVault: ps-ae-dta-demo-keyvault
+  apiVersion: spv.no/v2beta1
