@@ -1,50 +1,16 @@
-deployment:
-  kong:
-    # Enable or disable Kong itself
-    # Setting this to false with ingressController.enabled=true will create a
-    # controller-only release.
-    enabled: true
-  ## Specify the service account to create and to be assigned to the deployment / daemonset and for th migrations
-  serviceAccount:
-    create: true
-  ## Optionally specify the name of the service account to create and the annotations to add.
-  #  name:
-  #  annotations: {}
-
-  ## Optionally specify any extra sidecar containers to be included in the deployment
-  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
-  test:
-    # Enable creation of test resources for use with "helm test"
-    enabled: false
-  # Use a DaemonSet controller instead of a Deployment controller
-  daemonset: false
-  hostNetwork: false
-
-
-# -----------------------------------------------------------------------------
-# Kong parameters
-# -----------------------------------------------------------------------------
-
-# Specify Kong configuration
-# This chart takes all entries defined under `.env` and transforms them into into `KONG_*`
-# environment variables for Kong containers.
-# Their names here should match the names used in https://github.com/Kong/kong/blob/master/kong.conf.default
-# See https://docs.konghq.com/latest/configuration also for additional details
-# Values here take precedence over values from other sections of values.yaml,
-# e.g. setting pg_user here will override the value normally set when postgresql.enabled
-# is set below. In general, you should not set values here if they are set elsewhere.
 env:
-  # database: "postgres"
-  database: "off"
-  # admin_api_uri: "https://localhost:8444"
-  # admin_gui_api_url: "https://localhost:8444"
-  # admin_gui_url: "https://localhost:8445"
-  admin_api_uri: "https://kongadmin.dev2.pickles.com.au"
-  admin_gui_api_url: "https://kongadmin.dev2.pickles.com.au"
-  admin_gui_url: "https://kongmanager.dev2.pickles.com.au"
-  portal_api_url: "https://kongportalapi.dev2.pickles.com.au"
-  portal_url: "https://kongportal.dev2.pickles.com.au"    
-  nginx_worker_processes: "2"
+  database: "postgres"
+  # database: "off"
+  log_level: debug
+  admin_gui_host: kongmanager.dev2.pickles.com.au
+  admin_gui_protocol: https
+  admin_gui_url: https://kongmanager.dev2.pickles.com.au
+  admin_gui_api_url: https://kongadmin.dev2.pickles.com.au 
+  portal_gui_host: kongportal.dev2.pickles.com.au
+  portal_gui_url: https://kongportal.dev2.pickles.com.au
+  portal_api_url: https://kongportal.dev2.pickles.com.au/api      
+  portal_gui_protocol: https
+  nginx_worker_processes: 2
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
@@ -60,16 +26,23 @@ env:
         name: pickles-picklesauctions-kong-sas-token
         key: d365fostorage1 
 
-# storageClass: "default"
-# postgresql:
-#   enabled: true
-#   auth:
-#     username: "kong"  
-#     existingSecret: kongdb-postgresql
-#     secretKeys:
-#       adminPasswordKey: postgres-password
-#       userPasswordKey: password
-#       password: password        
+postgresql:
+  enabled: true
+  auth:
+    username: "kong"  
+    database: kong
+    existingSecret: kong-datamigration-postgresql
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: password    
+  image:
+    # use postgres < 14 until is https://github.com/Kong/kong/issues/8533 resolved and released
+    # enterprise (kong-gateway) supports postgres 14
+    tag: 13.11.0-debian-11-r20      
+  service:
+    ports:
+      postgresql: "5432"
+
 
 # This section can be used to configure some extra labels that will be added to each Kubernetes object generated.
 extraLabels: {}
@@ -83,7 +56,6 @@ image:
   ## Secrets must be manually created in the namespace.
   ## If using the official Kong Enterprise registry above, you MUST provide a secret.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-  ##
   pullSecrets:
     - dtapickles
 
@@ -104,32 +76,6 @@ status:
     enabled: false
     containerPort: 8543
     parameters: []
-
-# Specify Kong cluster service and listener configuration
-#
-# The cluster service *must* use TLS. It does not support the "http" block
-# available on other services.
-#
-# The cluster service cannot be exposed through an Ingress, as it must perform
-# TLS client validation directly and is not compatible with TLS-terminating
-# proxies. If you need to expose it externally, you must use "type:
-# LoadBalancer" and use a TCP-only load balancer (check your Kubernetes
-# provider's documentation, as the configuration required for this varies).
-cluster:
-  enabled: false
-  # To specify annotations or labels for the cluster service, add them to the respective
-  # "annotations" or "labels" dictionaries below.
-  annotations: {}
-  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
-  labels: {}
-
-  tls:
-    enabled: false
-    servicePort: 8005
-    containerPort: 8005
-    parameters: []
-
-  type: ClusterIP
 
 # Specify Kong proxy service configuration
 proxy:
@@ -177,13 +123,6 @@ ingressController:
     effectiveSemver:
   args: []
 
-  # Specify individual namespaces to watch for ingress configuration. By default,
-  # when no namespaces are set, the controller watches all namespaces and uses a
-  # ClusterRole to grant access to Kubernetes resources. When you list specific
-  # namespaces, the controller will watch those namespaces only and will create
-  # namespaced-scoped Roles for each of them. Note that watching specific namespaces
-  # disables KongClusterPlugin usage, as KongClusterPlugins only exist as cluster resources.
-  # Requires controller 2.0.0 or newer.
   watchNamespaces: []
 
   # Specify Kong Ingress Controller configuration via environment variables
@@ -291,7 +230,7 @@ livenessProbe:
 # "resources" and, if using the controller, "ingressController.resources" in values.yaml
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 4
   ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2beta
   targetCPUUtilizationPercentage:
@@ -342,7 +281,7 @@ enterprise:
   vitals:
     enabled: true
   portal:
-    enabled: false
+    enabled: true
   rbac:
     enabled: false
     admin_gui_auth: basic-auth
@@ -360,8 +299,7 @@ admin:
   enabled: true
   type: ClusterIP
   annotations:
-    konghq.com/protocol: "https"  
-  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+    konghq.com/protocol: https  
   labels: {}
 
   http:
@@ -387,7 +325,7 @@ manager:
   # Enable creating a Kubernetes service for Kong Manager
   enabled: true
   annotations:
-    konghq.com/protocol: "https"    
+    konghq.com/protocol: https   
   type: ClusterIP
   labels: {}
 
@@ -413,6 +351,8 @@ manager:
 portal:
   # Enable creating a Kubernetes service for the Developer Portal
   enabled: true
+  annotations:
+    konghq.com/protocol: https  
   type: ClusterIP
   labels: {}
 
@@ -430,7 +370,12 @@ portal:
     - http2
 
   ingress:
-    enabled: true
+    # annotations:
+      # konghq.com/https-redirect-status-code: "301"
+      # konghq.com/protocols: https
+      # konghq.com/strip-path: "false"
+      # kubernetes.io/ingress.class: kong-datamigration 
+    enabled: true        
     ingressClassName: kong-datamigration
     hostname: kongportal.dev2.pickles.com.au
     path: /
@@ -438,11 +383,13 @@ portal:
 portalapi:
   # Enable creating a Kubernetes service for the Developer Portal API
   enabled: true
+  annotations:
+    konghq.com/protocol: https  
   type: ClusterIP
   labels: {}
 
   http:
-    enabled: true
+    enabled: false
     servicePort: 8004
     containerPort: 8004
     parameters: []
@@ -458,12 +405,10 @@ portalapi:
     enabled: true
     ingressClassName: kong-datamigration
     hostname: kongportal.dev2.pickles.com.au
-    path: /
+    path: /api
 
 clustertelemetry:
   enabled: false
-  # To specify annotations or labels for the cluster telemetry service, add them to the respective
-  # "annotations" or "labels" dictionaries below.
   annotations: {}
   labels: {}
 
