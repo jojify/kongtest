@@ -1,10 +1,10 @@
 env:
   database: "postgres"
   log_level: debug
-  admin_gui_host: kongmanager.dev2.pickles.com.au
   admin_gui_protocol: https
-  admin_gui_url: https://kongmanager.dev2.pickles.com.au
-  admin_gui_api_url: https://kongadmin.dev2.pickles.com.au 
+  admin_gui_host: kongmanager.dev2.pickles.com.au
+  admin_gui_url: https://kongmanager.dev2.pickles.com.au  
+  admin_gui_api_url: https://kongmanager.dev2.pickles.com.au/api
   portal_gui_host: kongportal.dev2.pickles.com.au
   portal_gui_url: https://kongportal.dev2.pickles.com.au
   portal_api_url: https://kongportal.dev2.pickles.com.au/api      
@@ -19,11 +19,11 @@ env:
   admin_gui_error_log: /dev/stderr
   portal_api_error_log: /dev/stderr
   prefix: /kong_prefix/
-  d365fostorage1:
+  password:
     valueFrom:
       secretKeyRef:
-        name: pickles-picklesauctions-kong-sas-token
-        key: d365fostorage1 
+          name: kong-enterprise-superuser-password
+          key: password  
 
 postgresql:
   enabled: true
@@ -40,8 +40,11 @@ postgresql:
     ports:
       postgresql: "5432"
 
+
+# This section can be used to configure some extra labels that will be added to each Kubernetes object generated.
 extraLabels: {}
 
+# Specify Kong's Docker image and repository details here
 image:
   repository: dtapickles.azurecr.io/devops/kong/kong-proxy-go-plugins
   tag: "3.4.1.1.279639"
@@ -52,6 +55,7 @@ image:
 status:
   enabled: true
   http:
+    # Enable plaintext HTTP listen for the status listen
     enabled: true
     containerPort: 8100
     parameters: []
@@ -61,6 +65,7 @@ status:
     containerPort: 8543
     parameters: []
 
+# Specify Kong proxy service configuration
 proxy:
   enabled: true
   type: LoadBalancer
@@ -83,11 +88,7 @@ proxy:
     parameters:
     - http2
 
-  # Kong proxy ingress settings.
-  # Note: You need this only if you are using another Ingress Controller
-  # to expose Kong outside the k8s cluster.
   ingress:
-    # Enable/disable exposure using ingress.
     enabled: false
     ingressClassName:
     hostname:
@@ -106,6 +107,62 @@ ingressController:
     effectiveSemver:
   args: []
 
+  watchNamespaces: []
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env:
+    kong_admin_tls_skip_verify: true
+    kong_admin_token:
+      valueFrom:
+        secretKeyRef:
+          name: kong-admin-token-secret
+          key: token
+
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+    certificate:
+      provided: false
+
+  ingressClass: kong-datamigration
+  ingressClassAnnotations: {}
+
+  rbac:
+    create: true
+
+
+# readinessProbe for Kong pods
+readinessProbe:
+  httpGet:
+    path: "/status/ready"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+# livenessProbe for Kong pods
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+
+serviceMonitor:
+  enabled: true
+  namespace: kong-datamigration
+  labels:
+    release: kube-prometheus-stack
+
 enterprise:
   enabled: true
   license_secret: kong-enterprise-license
@@ -114,12 +171,11 @@ enterprise:
   portal:
     enabled: true
   rbac:
-    enabled: false
-    admin_gui_auth: basic-auth
+    enabled: true
+    admin_gui_auth: openid-connect
     session_conf_secret: kong-session-config
-    admin_gui_auth_conf_secret: CHANGEME-admin-gui-auth-conf-secret
+    admin_gui_auth_conf_secret: kong-oidc-configuration
 
-# Specify Kong admin API service and listener configuration
 admin:
   enabled: true
   type: ClusterIP
@@ -137,14 +193,17 @@ admin:
     enabled: true
     servicePort: 8444
     containerPort: 8444
+    protocol: TCP
     parameters:
     - http2
 
   ingress:
+    annotations:
+      konghq.com/strip-path: "true"
     enabled: true
     ingressClassName: kong-datamigration
-    hostname: kongadmin.dev2.pickles.com.au
-    path: /
+    hostname: kongmanager.dev2.pickles.com.au
+    path: /api
 
 manager:
   enabled: true
@@ -163,16 +222,20 @@ manager:
     enabled: true
     servicePort: 8445
     containerPort: 8445
+    # protocol: TCP
     parameters:
     - http2
 
   ingress:
+    # annotations:
+    #   konghq.com/plugins: okta-kongmanager
     enabled: true
     ingressClassName: kong-datamigration
     hostname: kongmanager.dev2.pickles.com.au
     path: /
 
 portal:
+  # Enable creating a Kubernetes service for the Developer Portal
   enabled: true
   annotations:
     konghq.com/protocol: https  
@@ -199,6 +262,7 @@ portal:
     path: /
 
 portalapi:
+  # Enable creating a Kubernetes service for the Developer Portal API
   enabled: true
   annotations:
     konghq.com/protocol: https  
@@ -237,6 +301,3 @@ clustertelemetry:
 
   type: ClusterIP
 
-extraConfigMaps: []
-
-extraSecrets: []
