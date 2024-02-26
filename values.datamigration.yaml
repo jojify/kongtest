@@ -1,6 +1,8 @@
 env:
   database: "postgres"
+  # database: "off"
   log_level: debug
+  # admin_gui_path: /
   admin_gui_protocol: https
   admin_gui_host: kongmanager.dev2.pickles.com.au
   admin_gui_url: https://kongmanager.dev2.pickles.com.au  
@@ -19,12 +21,28 @@ env:
   admin_gui_error_log: /dev/stderr
   portal_api_error_log: /dev/stderr
   prefix: /kong_prefix/
+  # kong_admin is the user name here
   password:
     valueFrom:
       secretKeyRef:
           name: kong-enterprise-superuser-password
           key: password  
-
+  # Portal authenticaion is moved to env from enterprise section for latest versions          
+  # portal_auth: basic-auth
+  
+  portal_auth: openid-connect  
+  portal_auth_conf:
+    valueFrom:
+      secretKeyRef:
+        name: kong-portal-auth-config
+        key: portal_auth_conf    
+  portal_session_conf:
+    valueFrom:
+      secretKeyRef:
+        name: kong-portal-session-config
+        key: portal_session_conf         
+  portal_auto_approve: true  
+    
 postgresql:
   enabled: true
   auth:
@@ -35,33 +53,48 @@ postgresql:
       adminPasswordKey: postgres-password
       userPasswordKey: password    
   image:
+    # use postgres < 14 until is https://github.com/Kong/kong/issues/8533 resolved and released
+    # enterprise (kong-gateway) supports postgres 14
     tag: 13.11.0-debian-11-r20      
   service:
     ports:
       postgresql: "5432"
 
 
+# This section can be used to configure some extra labels that will be added to each Kubernetes object generated.
 extraLabels: {}
 
+# Specify Kong's Docker image and repository details here
 image:
   repository: dtapickles.azurecr.io/devops/kong/kong-proxy-go-plugins
   tag: "3.4.1.1.279639"
   pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## If using the official Kong Enterprise registry above, you MUST provide a secret.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   pullSecrets:
     - dtapickles
 
+# Specify Kong status listener configuration
+# This listen is internal-only. It cannot be exposed through a service or ingress.
 status:
   enabled: true
   http:
+    # Enable plaintext HTTP listen for the status listen
     enabled: true
     containerPort: 8100
     parameters: []
 
   tls:
+    # Enable HTTPS listen for the status listen
+    # Kong versions prior to 2.1 do not support TLS status listens.
+    # This setting must remain false on those versions
     enabled: false
     containerPort: 8543
     parameters: []
 
+# Specify Kong proxy service configuration
 proxy:
   enabled: true
   type: LoadBalancer
@@ -83,7 +116,12 @@ proxy:
     containerPort: 8443
     parameters:
     - http2
+
+  # Kong proxy ingress settings.
+  # Note: You need this only if you are using another Ingress Controller
+  # to expose Kong outside the k8s cluster.
   ingress:
+    # Enable/disable exposure using ingress.
     enabled: false
     ingressClassName:
     hostname:
@@ -91,6 +129,9 @@ proxy:
     path: /
 
 
+# -----------------------------------------------------------------------------
+# Ingress Controller parameters
+# -----------------------------------------------------------------------------
 ingressController:
   enabled: true
   image:
@@ -100,8 +141,15 @@ ingressController:
   args: []
 
   watchNamespaces: []
+
+  # Specify Kong Ingress Controller configuration via environment variables
   env:
+    # The controller disables TLS verification by default because Kong
+    # generates self-signed certificates by default. Set this to false once you
+    # have installed CA-signed certificates.
     kong_admin_tls_skip_verify: true
+    # If using Kong Enterprise with RBAC enabled, uncomment the section below
+    # and specify the secret/key containing your admin token.
     kong_admin_token:
       valueFrom:
         secretKeyRef:
@@ -114,23 +162,138 @@ ingressController:
     port: 8080
     certificate:
       provided: false
+    # Specifiy the secretName when the certificate is provided via a TLS secret
+    # secretName: ""
+    # Specifiy the CA bundle of the provided certificate.
+    # This is a PEM encoded CA bundle which will be used to validate the webhook certificate. If unspecified, system trust roots on the apiserver are used.
+    # caBundle:
+    #   | Add the CA bundle content here.
 
   ingressClass: kong-datamigration
+  # annotations for IngressClass resource (Kubernetes 1.18+)
   ingressClassAnnotations: {}
 
   rbac:
+    # Specifies whether RBAC resources should be created
     create: true
 
+  # general properties
+  livenessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    timeoutSeconds: 20
+    periodSeconds: 20
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: "/readyz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    timeoutSeconds: 20
+    periodSeconds: 20
+    successThreshold: 1
+    failureThreshold: 3
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 600Mi
 
+
+# If you want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+resources:
+  limits:
+   cpu: 1
+   memory: 1.5Gi
+  requests:
+   cpu: 200m
+   memory: 600Mi
+
+# readinessProbe for Kong pods
+readinessProbe:
+  httpGet:
+    path: "/status/ready"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+# livenessProbe for Kong pods
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+
+# Enable autoscaling using HorizontalPodAutoscaler
+# When configuring an HPA, you must set resource requests on all containers via
+# "resources" and, if using the controller, "ingressController.resources" in values.yaml
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 4
+  ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2beta
+  targetCPUUtilizationPercentage:
+  ## Otherwise for clusters that do support autoscaling/v2beta, use metrics
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 120
+
+priorityClassName: ""
+
+# securityContext for Kong pods.
+securityContext: {}
+
+# securityContext for containers.
+containerSecurityContext: {}
 
 serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  # If you wish to gather metrics from a Kong instance with the proxy disabled (such as a hybrid control plane), see:
+  # https://github.com/Kong/charts/blob/main/charts/kong/README.md#prometheus-operator-integration
   enabled: true
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
   namespace: kong-datamigration
   labels:
     release: kube-prometheus-stack
 
+# Toggle Kong Enterprise features on or off
+# RBAC and SMTP configuration have additional options that must all be set together
+# Other settings should be added to the "env" settings below
 enterprise:
   enabled: true
+  # Kong Enterprise license secret name
+  # This secret must contain a single 'license' key, containing your base64-encoded license data
+  # The license secret is required to unlock all Enterprise features. If you omit it,
+  # Kong will run in free mode, with some Enterprise features disabled.
   license_secret: kong-enterprise-license
   vitals:
     enabled: true
@@ -138,13 +301,23 @@ enterprise:
     enabled: true
   rbac:
     enabled: true
+    # admin_gui_auth: basic-auth
     admin_gui_auth: openid-connect
-    session_conf_secret: kong-session-config
+    # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions
+    session_conf_secret: kong-admin-session-config
+    # If admin_gui_auth is not set to basic-auth, provide a secret name which
+    # has an admin_gui_auth_conf key containing the plugin config JSON
     admin_gui_auth_conf_secret: kong-oidc-configuration
 
+# Specify Kong admin API service and listener configuration
 admin:
+  # Enterprise users that wish to use Kong Manager with the controller should enable this
   enabled: true
   type: ClusterIP
+  # For some reason, this can't merged with the ingress setting below
+  # Need seperate https annotations for admin and manager
   annotations:
     konghq.com/protocol: https  
   labels: {}
@@ -172,7 +345,10 @@ admin:
     path: /api
 
 manager:
+  # Enable creating a Kubernetes service for Kong Manager
   enabled: true
+  # Need seperate https annotations for admin and manager
+  # No issues regarding Plugin like annotations
   annotations:
     konghq.com/protocol: https   
   type: ClusterIP
@@ -188,16 +364,20 @@ manager:
     enabled: true
     servicePort: 8445
     containerPort: 8445
+    # protocol: TCP
     parameters:
     - http2
 
   ingress:
+    # annotations:
+    #   konghq.com/plugins: okta-kongmanager
     enabled: true
     ingressClassName: kong-datamigration
     hostname: kongmanager.dev2.pickles.com.au
     path: /
 
 portal:
+  # Enable creating a Kubernetes service for the Developer Portal
   enabled: true
   annotations:
     konghq.com/protocol: https  
@@ -224,6 +404,7 @@ portal:
     path: /
 
 portalapi:
+  # Enable creating a Kubernetes service for the Developer Portal API
   enabled: true
   annotations:
     konghq.com/protocol: https  
@@ -261,3 +442,7 @@ clustertelemetry:
     parameters: []
 
   type: ClusterIP
+
+extraConfigMaps: []
+
+extraSecrets: []
