@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kong-admin-session-config
+  namespace: kong-datamigration
+data:
+  admin_gui_session_conf: >-
+    eyJzZWNyZXQiOiIrb3g0TDBBd1dsM1NJVFhON3RTbWJWdzh5TkRsalJtdjVHSnQ4TnJKb0VRPSIsImNvb2tpZV9uYW1lIjoiYWRtaW5fc2Vzc2lvbiIsInN0b3JhZ2UiOiJrb25nIiwiY29va2llX3NlY3VyZSI6dHJ1ZSwiY29va2llX2h0dHBfb25seSI6dHJ1ZSwiY29va2llX3NhbWVzaXRlIjoiU3RyaWN0In0=
+type: Opaque
