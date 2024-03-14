@@ -428,6 +428,9 @@ portalapi:
     enabled: true
     ingressClassName: kong-datamigration
     hostname: kongportal.dev2.pickles.com.au
+    annotations:
+      kubernetes.io/ingress.class: "kong-datamigration"
+      konghq.com/strip-path: "true"    
     path: /api
 
 clustertelemetry:
@@ -446,3 +449,25 @@ clustertelemetry:
 extraConfigMaps: []
 
 extraSecrets: []
+
+kongAuthJwt:
+  algorithm: RS256
+  key: https://apmf-dm.dev2.pickles.com.au
+  kongCredType: jwt
+  rsaPublicKey: |-
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwW60gb/cRNZ3FVvcsSW0
+    wG8ACSkT0lFQRjTLZDPvaMle2/pYtp5QCAsANiLoairttAYStcEGz9IzF8wCekR3
+    b5KtDToCUu9lMJytzffeXMPRLbkvnQJpEAiyNNT13ayUjOUgBAdftUGOYnto4qKc
+    glvuVXI5PFvAiDBT3xrQMsHeZ1gSJdUhGLr1ji9fJmMQH+XF+1W/d56t6dngrQuy
+    TpH4ylB6wS9ueqQYOQgGycmrGP8AXKF8AtRnXPYH2Wy/NIaHUkNkL2U2G2uc77al
+    0NDbEpxvqdSBYXytt/mRKFXiPFvZauwoQmtAvvXaCldsPsahkc7q3q6tsGjGJAhB
+    rQIDAQAB
+    -----END PUBLIC KEY-----
+
+kongConsumer:
+  namespace: kong-datamigration
+
+kongSasToken:
+  keyVault: ps-ae-dta-demo-keyvault
+  apiVersion: spv.no/v2beta1
