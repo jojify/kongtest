@@ -1,0 +1,115 @@
+env:
+  # This is a control_plane node
+  role: control_plane
+  # These certificates are used for control plane / data plane communication
+  cluster_cert: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
+  database: "postgres"
+  admin_gui_host: kongmanager.jojijohn.com
+  admin_gui_url: "https://kongmanager.jojijohn.com"
+  admin_gui_api_url: https://kongmanager.jojijohn.com/api
+  cluster_listen: 0.0.0.0:8005
+  cluster_telemetry_listen: 0.0.0.0:8006
+
+  # if you are using basic-auth as auth method, you can use the following
+  # kong_admin is the user name here for basic-auth
+  password:
+    valueFrom:
+      secretKeyRef:
+          name: kong-enterprise-superuser-password
+          key: password    
+
+storageClass: "default"
+postgresql:
+  enabled: true
+  auth:
+    username: "kong"  
+    existingSecret: kong-cp-postgresql
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: password
+      password: password
+
+secretVolumes:
+- kong-cluster-cert
+
+image:  
+  # This kong image is the opensource version. When Kong manger is loading it will show kong manager OSS
+  # repository: kong
+  # The kong/kong-gateway image is the official Kong image. Can be used for kong enterprise in free mode
+  repository: kong/kong-gateway
+  tag: "3.4"
+  pullPolicy: IfNotPresent
+
+proxy:
+  enabled: false
+
+ingressController:
+  enabled: false
+
+cluster:
+  enabled: true
+  tls:
+    enabled: true
+    servicePort: 8005
+    containerPort: 8005
+    parameters: []
+  type: ClusterIP  
+
+clustertelemetry:
+  enabled: true
+  tls:
+    enabled: true
+    servicePort: 8006
+    containerPort: 8006  
+
+enterprise:
+  enabled: true
+  license_secret: kong-enterprise-license
+  vitals:
+    enabled: false 
+  portal:
+    enabled: false
+  rbac:
+    enabled: false
+    admin_gui_auth: basic-auth
+    session_conf_secret: kong-session-config
+    admin_gui_auth_conf_secret: CHANGEME-admin-gui-auth-conf-secret
+
+admin:
+  enabled: true
+  annotations:
+    konghq.com/protocol: "https"  
+  type: ClusterIP
+  labels: {}
+  tls:
+    enabled: true
+    servicePort: 8444
+    containerPort: 8444
+    parameters:
+    - http2
+  ingress:
+    enabled: true
+    ingressClassName: kong-local
+    hostname: kongmanager.jojijohn.com
+    annotations:
+      konghq.com/strip-path: "true"
+    path: /api
+
+manager:
+  enabled: true
+  annotations:
+    konghq.com/protocol: "https"    
+  type: ClusterIP
+  labels: {}
+  tls:
+    enabled: true
+    servicePort: 8445
+    containerPort: 8445
+    parameters:
+    - http2
+  ingress:
+    enabled: true
+    ingressClassName: kong-local
+    hostname: kongmanager.jojijohn.com
+    path: /

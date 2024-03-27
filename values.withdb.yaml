@@ -1,0 +1,290 @@
+env:
+  # database: "off"
+  database: "postgres"
+  nginx_worker_processes: "1"
+  # admin_api_uri: "https://kongadmin.jojijohn.com"
+  # admin_gui_api_url: "https://kongadmin.jojijohn.com"
+
+  admin_gui_host: kongmanager.jojijohn.com
+  admin_gui_url: "https://kongmanager.jojijohn.com"
+  admin_gui_api_url: https://kongmanager.jojijohn.com/api
+  prefix: /kong_prefix/
+  # kong_admin is the user name here
+  password:
+    valueFrom:
+      secretKeyRef:
+          name: kong-enterprise-superuser-password
+          key: password  
+
+storageClass: "default"
+
+postgresql:
+  enabled: true
+  auth:
+    username: "kong"  
+    database: kong
+    existingSecret: kong-local-postgresql
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: password    
+  image:
+    # use postgres < 14 until is https://github.com/Kong/kong/issues/8533 resolved and released
+    # enterprise (kong-gateway) supports postgres 14
+    tag: 13.11.0-debian-11-r20      
+  service:
+    ports:
+      postgresql: "5432"
+
+
+image:  
+  # This kong image is the opensource version. When Kong manger is loading it will show kong manager OSS
+  # repository: kong
+  # The kong/kong-gateway image is the official Kong image. Can be used for kong enterprise in free mode
+  repository: kong/kong-gateway
+  tag: "3.4"
+  pullPolicy: IfNotPresent
+
+# Specify Kong status listener configuration
+# This listen is internal-only. It cannot be exposed through a service or ingress.
+status:
+  enabled: true
+  http:
+    enabled: true
+    containerPort: 8100
+    parameters: []
+
+  tls:
+    # Kong versions prior to 2.1 do not support TLS status listens.
+    # This setting must remain false on those versions  
+    enabled: false
+    containerPort: 8543
+    parameters: []
+
+# Specify Kong cluster service and listener configuration
+# The cluster service *must* use TLS. It does not support the "http" block
+# available on other services.
+# The cluster service cannot be exposed through an Ingress, as it must perform
+# TLS client validation directly and is not compatible with TLS-terminating
+# proxies. If you need to expose it externally, you must use "type:
+# LoadBalancer" and use a TCP-only load balancer (check your Kubernetes
+# provider's documentation, as the configuration required for this varies).
+cluster:
+  enabled: false
+  annotations: {}
+  labels: {}
+
+  tls:
+    enabled: false
+    servicePort: 8005
+    containerPort: 8005
+    parameters: []
+
+  type: ClusterIP
+
+# Specify Kong proxy service configuration
+proxy:
+  enabled: true
+  type: LoadBalancer
+  # annotations:
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  labels:
+    enable-metrics: "true"
+
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+
+  ingress:
+    enabled: false
+    ingressClassName:
+    hostname:
+    annotations: {}
+    # Ingress path.
+    path: /
+
+
+# -----------------------------------------------------------------------------
+# Ingress Controller parameters
+# -----------------------------------------------------------------------------
+# Kong Ingress Controller's primary purpose is to satisfy Ingress resources
+# created in k8s.  It uses CRDs for more fine grained control over routing and
+# for Kong specific configuration.
+ingressController:
+  enabled: true
+  image:
+    repository: kong/kubernetes-ingress-controller
+    tag: "2.12"
+    pullPolicy: IfNotPresent
+    effectiveSemver:
+  args: []
+ 
+  watchNamespaces: []
+
+  # Specify Kong Ingress Controller configuration via environment variables
+  env:
+    # The controller disables TLS verification by default because Kong
+    # generates self-signed certificates by default. Set this to false once you
+    # have installed CA-signed certificates.
+    kong_admin_tls_skip_verify: true
+    # If using Kong Enterprise with RBAC enabled, uncomment the section below
+    # and specify the secret/key containing your admin token.
+    kong_admin_token:
+      valueFrom:
+        secretKeyRef:
+          name: kong-admin-token-secret
+          key: token
+
+  admissionWebhook:
+    enabled: false
+    failurePolicy: Fail
+    port: 8080
+    certificate:
+      provided: false
+
+  ingressClass: kong-local
+  # annotations for IngressClass resource (Kubernetes 1.18+)
+  ingressClassAnnotations: {}
+
+  livenessProbe:
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    timeoutSeconds: 20
+    periodSeconds: 20
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: "/readyz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    timeoutSeconds: 20
+    periodSeconds: 20
+    successThreshold: 1
+    failureThreshold: 3
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 600Mi
+
+resources:
+  limits:
+   cpu: 1
+   memory: 1.5Gi
+  requests:
+   cpu: 200m
+   memory: 600Mi
+
+# Enable autoscaling using HorizontalPodAutoscaler
+# When configuring an HPA, you must set resource requests on all containers via
+# "resources" and, if using the controller, "ingressController.resources" in values.yaml
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2beta
+  targetCPUUtilizationPercentage:
+  ## Otherwise for clusters that do support autoscaling/v2beta, use metrics
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+enterprise:
+  enabled: true
+  # Kong Enterprise license secret name
+  # This secret must contain a single 'license' key, containing your base64-encoded license data
+  # The license secret is required to unlock all Enterprise features. If you omit it,
+  # Kong will run in free mode, with some Enterprise features disabled.
+  license_secret: kong-enterprise-license
+  vitals:
+    enabled: false 
+  portal:
+    enabled: false
+  rbac:
+    enabled: false
+    admin_gui_auth: basic-auth
+    # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
+    # The key value must be a secret configuration, following the example at
+    # https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions
+    session_conf_secret: kong-session-config
+    # If admin_gui_auth is not set to basic-auth, provide a secret name which
+    # has an admin_gui_auth_conf key containing the plugin config JSON
+    admin_gui_auth_conf_secret: CHANGEME-admin-gui-auth-conf-secret
+ 
+
+admin:
+  enabled: true
+  # below is compulsory if you want to expose admin api through https
+  annotations:
+    konghq.com/protocol: "https"  
+  type: ClusterIP
+  labels: {}
+
+  http:
+    enabled: false
+    servicePort: 8001
+    containerPort: 8001
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 8444
+    containerPort: 8444
+    parameters:
+    - http2
+    # client:
+    #   secretName: "kong-admin-tls"    
+
+  ingress:
+    enabled: true
+    ingressClassName: kong-local
+    hostname: kongmanager.jojijohn.com
+    annotations:
+      konghq.com/strip-path: "true"
+    path: /api
+
+manager:
+  enabled: true
+  annotations:
+    konghq.com/protocol: "https"    
+  type: ClusterIP
+  labels: {}
+
+  http:
+    enabled: false
+    servicePort: 8002
+    containerPort: 8002
+    parameters: []
+
+  tls:
+    enabled: true
+    servicePort: 8445
+    containerPort: 8445
+    parameters:
+    - http2
+
+  ingress:
+    enabled: true
+    ingressClassName: kong-local
+    hostname: kongmanager.jojijohn.com
+    # annotations: {}
+    path: /
+
