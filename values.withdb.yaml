@@ -2,12 +2,12 @@ env:
   # database: "off"
   database: "postgres"
   nginx_worker_processes: "1"
-  # admin_api_uri: "https://kongadmin.jojijohn.com"
-  # admin_gui_api_url: "https://kongadmin.jojijohn.com"
+  # admin_api_uri: "https://kongadmin.pickles.com.au"
+  # admin_gui_api_url: "https://kongadmin.pickles.com.au"
 
-  admin_gui_host: kongmanager.jojijohn.com
-  admin_gui_url: "https://kongmanager.jojijohn.com"
-  admin_gui_api_url: https://kongmanager.jojijohn.com/api
+  admin_gui_host: kongmanager.pickles.com.au
+  admin_gui_url: "https://kongmanager.pickles.com.au"
+  admin_gui_api_url: https://kongmanager.pickles.com.au/api
   prefix: /kong_prefix/
   # kong_admin is the user name here
   password:
@@ -256,7 +256,7 @@ admin:
   ingress:
     enabled: true
     ingressClassName: kong-local
-    hostname: kongmanager.jojijohn.com
+    hostname: kongmanager.pickles.com.au
     annotations:
       konghq.com/strip-path: "true"
     path: /api
@@ -284,7 +284,7 @@ manager:
   ingress:
     enabled: true
     ingressClassName: kong-local
-    hostname: kongmanager.jojijohn.com
+    hostname: kongmanager.pickles.com.au
     # annotations: {}
     path: /
 
