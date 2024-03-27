@@ -213,7 +213,7 @@ enterprise:
   # This secret must contain a single 'license' key, containing your base64-encoded license data
   # The license secret is required to unlock all Enterprise features. If you omit it,
   # Kong will run in free mode, with some Enterprise features disabled.
-  license_secret: kong-enterprise-license
+  # license_secret: kong-enterprise-license
   vitals:
     enabled: false 
   portal:
