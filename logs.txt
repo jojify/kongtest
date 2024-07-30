@@ -1,0 +1,36 @@
+2024/07/30 05:13:53 [debug] 2398#0: *171569 [lua] init.lua:247: flush_counters(): [counters] store merged workers data
+2024/07/30 05:13:53 [debug] 2398#0: *171569 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:53 [info] 2397#0: *172095 client closed connection while waiting for request, client: 10.108.15.246, server: 0.0.0.0:8000
+2024/07/30 05:13:53 [info] 2397#0: *172096 client closed connection while waiting for request, client: 10.108.0.205, server: 0.0.0.0:8000
+2024/07/30 05:13:53 [info] 2397#0: *172097 client closed connection while SSL handshaking, client: 10.108.0.205, server: 0.0.0.0:8443
+2024/07/30 05:13:53 [info] 2397#0: *172098 client closed connection while waiting for request, client: 10.108.29.120, server: 0.0.0.0:8000
+2024/07/30 05:13:53 [debug] 2397#0: *171278 [lua] init.lua:290: [cluster_events] polling events from: 1722316403.857
+2024/07/30 05:13:54 [debug] 2397#0: *171399 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:54 [debug] 2397#0: *159722 [lua] init.lua:23: poll(): worker-events: emulate poll method
+2024/07/30 05:13:54 [debug] 2397#0: *159722 [lua] init.lua:23: poll(): worker-events: emulate poll method
+127.0.0.1 - - [30/Jul/2024:05:13:54 +0000] "GET /status HTTP/2.0" 200 1977 "-" "Go-http-client/2.0"
+2024/07/30 05:13:54 [debug] 2398#0: *171568 [lua] init.lua:223: flush_counters(): [counters] pid 2398 acquired lock
+2024/07/30 05:13:54 [debug] 2398#0: *171568 [lua] init.lua:230: flush_counters(): [counters] merge worker data
+2024/07/30 05:13:54 [debug] 2398#0: *171568 [lua] init.lua:236: flush_counters(): [counters] encode merged workers data
+2024/07/30 05:13:54 [debug] 2398#0: *171568 [lua] init.lua:247: flush_counters(): [counters] store merged workers data
+2024/07/30 05:13:54 [debug] 2398#0: *171568 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:55 [debug] 2397#0: *171260 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:55 [debug] 2398#0: *171594 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:55 [info] 2397#0: *172100 client closed connection while SSL handshaking, client: 10.108.6.201, server: 0.0.0.0:8443
+2024/07/30 05:13:56 [debug] 2397#0: *171635 [lua] init.lua:223: flush_counters(): [counters] pid 2397 acquired lock
+2024/07/30 05:13:56 [info] 2397#0: *171635 [lua] init.lua:155: poll_worker_data(): [counters] 3 of 2 workers reported., context: ngx.timer
+2024/07/30 05:13:56 [debug] 2397#0: *171635 [lua] init.lua:230: flush_counters(): [counters] merge worker data
+2024/07/30 05:13:56 [debug] 2397#0: *171635 [lua] init.lua:236: flush_counters(): [counters] encode merged workers data
+2024/07/30 05:13:56 [debug] 2397#0: *171635 [lua] init.lua:247: flush_counters(): [counters] store merged workers data
+2024/07/30 05:13:56 [debug] 2397#0: *171635 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:56 [debug] 2398#0: *171514 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:56 [info] 2397#0: *172101 client closed connection while waiting for request, client: 10.108.6.201, server: 0.0.0.0:8000
+2024/07/30 05:13:57 [debug] 2397#0: *171387 [lua] init.lua:223: flush_counters(): [counters] pid 2397 acquired lock
+2024/07/30 05:13:57 [debug] 2397#0: *171387 [lua] init.lua:230: flush_counters(): [counters] merge worker data
+2024/07/30 05:13:57 [debug] 2397#0: *171387 [lua] init.lua:236: flush_counters(): [counters] encode merged workers data
+2024/07/30 05:13:57 [debug] 2397#0: *171387 [lua] init.lua:247: flush_counters(): [counters] store merged workers data
+2024/07/30 05:13:57 [debug] 2397#0: *171387 [lua] init.lua:256: flush_counters(): [counters] flush done
+2024/07/30 05:13:57 [debug] 2397#0: *159722 [lua] init.lua:23: poll(): worker-events: emulate poll method
+2024/07/30 05:13:57 [debug] 2397#0: *159722 [lua] init.lua:23: poll(): worker-events: emulate poll method
+127.0.0.1 - - [30/Jul/2024:05:13:57 +0000] "GET /status HTTP/2.0" 200 1977 "-" "Go-http-client/2.0"
+2024/07/30 05:13:57 [debug] 2398#0: *171622 [lua] init.lua:256: flush_counters(): [counters] flush done
