@@ -1,0 +1,383 @@
+time="2024-07-29T16:17:09Z" level=info msg="diagnostics server disabled"
+time="2024-07-29T16:17:09Z" level=info msg="starting controller manager" commit=956f457aafc2a07910bfa3c496e549493940e1e1 logger=setup release=2.12.3 repo="https://github.com/Kong/kubernetes-ingress-controller.git"
+time="2024-07-29T16:17:09Z" level=info msg="the ingress class name has been set" logger=setup value=kong-datamigration
+time="2024-07-29T16:17:09Z" level=info msg="getting enabled options and features" logger=setup
+time="2024-07-29T16:17:09Z" level=info msg="getting the kubernetes client configuration" logger=setup
+W0729 16:17:09.248021       1 client_config.go:618] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+time="2024-07-29T16:17:09Z" level=info msg="starting standalone health check server" logger=setup
+time="2024-07-29T16:17:09Z" level=info msg="getting the kong admin api client configuration" logger=setup
+time="2024-07-29T16:17:09Z" level=info msg="Retrying kong admin api client call after error" error="making HTTP request: Get \"https://localhost:8444/\": dial tcp [::1]:8444: connect: connection refused" logger=setup retries=0/60
+time="2024-07-29T16:17:10Z" level=info msg="Retrying kong admin api client call after error" error="making HTTP request: Get \"https://localhost:8444/\": dial tcp [::1]:8444: connect: connection refused" logger=setup retries=1/60
+time="2024-07-29T16:17:11Z" level=info msg="Retrying kong admin api client call after error" error="making HTTP request: Get \"https://localhost:8444/\": dial tcp [::1]:8444: connect: connection refused" logger=setup retries=2/60
+time="2024-07-29T16:17:12Z" level=info msg="Retrying kong admin api client call after error" error="making HTTP request: Get \"https://localhost:8444/\": dial tcp [::1]:8444: connect: connection refused" logger=setup retries=3/60
+time="2024-07-29T16:17:13Z" level=info msg="Retrying kong admin api client call after error" error="making HTTP request: Get \"https://localhost:8444/\": dial tcp [::1]:8444: connect: connection refused" logger=setup retries=4/60
+time="2024-07-29T16:17:14Z" level=info msg="Retrying kong admin api client call after error" error="making HTTP request: Get \"https://localhost:8444/\": dial tcp [::1]:8444: connect: connection refused" logger=setup retries=5/60
+time="2024-07-29T16:17:15Z" level=info msg="tag filtering enabled" logger=setup tags="[\"managed-by-ingress-controller\"]"
+time="2024-07-29T16:17:15Z" level=info msg="configuring and building the controller manager" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="building the manager runtime scheme and loading apis into the scheme" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Database mode detected, enabling leader election" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Initializing Dataplane Client" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Emitting Kubernetes events enabled, creating an event recorder for kong-client" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="combined routes mode has been enabled"
+time="2024-07-29T16:17:15Z" level=info msg="Starting Admission Server" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="admission webhook server disabled" component=admission-server
+time="2024-07-29T16:17:15Z" level=info msg="Initializing Dataplane Synchronizer" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Starting Status Updater" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Initializing Dataplane address Discovery" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="falling back to a default address finder for UDP" logger=setup reason="no publish status address or publish service were provided"
+time="2024-07-29T16:17:15Z" level=info msg="Starting Enabled Controllers" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Required CustomResourceDefinitions are not installed, setting up a watch for them in case they are installed afterward" logger=controllers.Dynamic/KnativeV1Alpha1/Ingress
+time="2024-07-29T16:17:15Z" level=info msg="Required CustomResourceDefinitions are not installed, setting up a watch for them in case they are installed afterward" logger=controllers.Dynamic/Gateway
+time="2024-07-29T16:17:15Z" level=info msg="Required CustomResourceDefinitions are not installed, setting up a watch for them in case they are installed afterward" logger=controllers.Dynamic/HTTPRoute
+time="2024-07-29T16:17:15Z" level=info msg="Add readiness probe to health server" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="starting telemetry manager"
+time="2024-07-29T16:17:15Z" level=info msg="anonymous reports enabled" logger=setup
+time="2024-07-29T16:17:15Z" level=info msg="Starting manager" logger=setup
+I0729 16:17:15.721436       1 leaderelection.go:250] attempting to acquire leader lease kong-datamigration/kong-ingress-controller-leader-kong-datamigration...
+I0729 16:17:34.107534       1 leaderelection.go:260] successfully acquired lease kong-datamigration/kong-ingress-controller-leader-kong-datamigration
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Ingress.netv1 source="channel source: 0xc0009a7840"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.EndpointSlice source="kind source: *v1.EndpointSlice"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.EndpointSlice
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Ingress.netv1 source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Ingress.netv1 source="kind source: *v1.Ingress"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.Ingress.netv1
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongConsumerGroup source="channel source: 0xc000b0c080"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongIngress source="kind source: *v1.KongIngress"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.KongIngress
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Service source="kind source: *v1.Service"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.Service
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongConsumerGroup source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Secrets source="kind source: *v1.Secret"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.Secrets
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Dynamic/KnativeV1Alpha1/Ingress source="kind source: *v1.CustomResourceDefinition"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongConsumer source="channel source: 0xc000b0c000"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongConsumer source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongConsumer source="kind source: *v1.KongConsumer"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.KongConsumer
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongConsumerGroup source="kind source: *v1beta1.KongConsumerGroup"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.KongConsumerGroup
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.IngressClassParameters source="kind source: *v1alpha1.IngressClassParameters"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Dynamic/HTTPRoute source="kind source: *v1.CustomResourceDefinition"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongPlugin source="kind source: *v1.KongPlugin"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.IngressClass.netv1 source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.IngressClass.netv1
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.Dynamic/KnativeV1Alpha1/Ingress
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.Dynamic/HTTPRoute
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.Dynamic/Gateway source="kind source: *v1.CustomResourceDefinition"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.Dynamic/Gateway
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.UDPIngress source="channel source: 0xc0009a79c0"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.UDPIngress source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.TCPIngress source="channel source: 0xc0009a7a40"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.TCPIngress source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.TCPIngress source="kind source: *v1beta1.TCPIngress"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.TCPIngress
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongClusterPlugin source="kind source: *v1.IngressClass"
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.KongClusterPlugin source="kind source: *v1.KongClusterPlugin"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.KongClusterPlugin
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.IngressClassParameters
+time="2024-07-29T16:17:34Z" level=info msg="Starting EventSource" logger=controllers.UDPIngress source="kind source: *v1beta1.UDPIngress"
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.UDPIngress
+time="2024-07-29T16:17:34Z" level=info msg="Starting Controller" logger=controllers.KongPlugin
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.IngressClassParameters worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.Dynamic/HTTPRoute worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.KongPlugin worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.Dynamic/Gateway worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.TCPIngress worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.IngressClass.netv1 worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.UDPIngress worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.Secrets worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.KongIngress worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.KongClusterPlugin worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.Dynamic/KnativeV1Alpha1/Ingress worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.KongConsumer worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.Service worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.Ingress.netv1 worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.EndpointSlice worker count=1
+time="2024-07-29T16:17:35Z" level=info msg="Starting workers" logger=controllers.KongConsumerGroup worker count=1
+time="2024-07-29T16:17:42Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:42Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:42Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:42Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:42Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:42Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:42Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:42Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:44Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:17:45Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:45Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:45Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:45Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:45Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:45Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:45Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:45Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:48Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:48Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:48Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:48Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:48Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:48Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:48Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:48Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:51Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:51Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:51Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:51Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:51Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:51Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:51Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:51Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:54Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:54Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:54Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:54Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:54Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:54Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:54Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:54Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:57Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:57Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:17:57Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:57Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:17:57Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:57Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:17:57Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:17:57Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:00Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:00Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:00Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:00Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:00Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:00Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:00Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:00Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:03Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:03Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:03Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:03Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:03Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:03Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:03Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:03Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:06Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:06Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:06Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:06Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:06Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:06Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:06Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:06Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:09Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:09Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:09Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:09Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:09Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:09Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:09Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:09Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:12Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-manager" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:12Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-manager.8445
+time="2024-07-29T16:18:12Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portal" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:12Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portal.8446
+time="2024-07-29T16:18:12Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-admin" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:12Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-admin.8444
+time="2024-07-29T16:18:12Z" level=info msg="no targets could be found for kubernetes service kong-datamigration/kong-datamigration-kong-portalapi" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:12Z" level=info msg="no targets found to create upstream" service_name=kong-datamigration.kong-datamigration-kong-portalapi.8447
+time="2024-07-29T16:18:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:21:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:21:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:26:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:26:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:32:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:32:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:37:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:37:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:42:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:42:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:47:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:47:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:52:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:52:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:58:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T16:58:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:03:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:03:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:08:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:08:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:13:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:13:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:18:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:18:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:23:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:23:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:28:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:28:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:33:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:34:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:39:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:39:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:44:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:44:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:49:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:49:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:54:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:54:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T17:59:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:00:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:05:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:05:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:10:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:10:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:15:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:15:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:20:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:20:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:26:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:26:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:31:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:31:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:37:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:37:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:42:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:42:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:47:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:48:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:53:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:53:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:58:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T18:58:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:04:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:04:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:09:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:09:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:14:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:14:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:19:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:19:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:24:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:24:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:30:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:30:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:35:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:35:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:40:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:40:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:45:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:45:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:50:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:50:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:56:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T19:56:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:01:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:01:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:06:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:06:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:11:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:11:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:16:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:18:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:23:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:23:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:28:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:28:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:33:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:33:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:38:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:38:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:44:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:44:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:49:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:49:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:54:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:54:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:59:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T20:59:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:04:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:04:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:10:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:10:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:15:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:15:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:20:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:20:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:25:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:25:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:30:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:30:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:36:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:36:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:41:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:41:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:46:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:46:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:51:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:51:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:56:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T21:56:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:01:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:01:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:07:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:07:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:12:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:12:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:17:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:17:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:22:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:22:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:27:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:27:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:33:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:33:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:38:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:38:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:43:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:43:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:48:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:48:34Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:53:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:53:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:58:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T22:58:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:03:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:03:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:09:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:09:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:14:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:14:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:19:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:19:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:24:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:24:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:30:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:30:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:35:13Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:35:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:40:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:40:28Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:45:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:45:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:50:43Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:50:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:55:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-29T23:55:58Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:01:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:01:10Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:06:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:06:22Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:11:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:11:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:16:46Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:16:52Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:21:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:22:01Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:27:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:27:19Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:32:25Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:32:31Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:37:37Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:37:40Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:42:49Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:42:55Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:48:04Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:48:07Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
+time="2024-07-30T00:53:16Z" level=info msg="successfully synced configuration to Kong" update_strategy=DBMode url="https://localhost:8444"
